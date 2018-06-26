@@ -5,6 +5,13 @@ var args = process.argv.slice(2);
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
+function printArgError() {
+    if (args[0] === undefined || args[1] === undefined) throw new Error('You did not input the repo owner and name. Please input both in the correct order (owner, name)')
+    if (args[2] !== undefined) console.log('You input too many arguments. Please input two (owner, name.')
+}
+
+printArgError()
+
 function getRepoContributors(repoOwner, repoName, cb) {
     let options = {
         url: "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors",
@@ -15,7 +22,8 @@ function getRepoContributors(repoOwner, repoName, cb) {
     }
     
     request(options, function(err, res, body) {
-        cb(err, body);
+        if (res.statusCode !== '200') throw new Error('Request failed');
+        cb(err, body)
     })
 }
 
@@ -28,8 +36,8 @@ function downloadImageByURL(url, filePath) {
 }
 
 getRepoContributors(args[0], args[1], function(err, result) {
-    console.log("Errors:", err);
-    let jsonResObj = JSON.parse(result);
+    console.log("Errors:", err)
+    let jsonResObj = JSON.parse(result)
     for (let contributor of jsonResObj) {
         downloadImageByURL(contributor.avatar_url, contributor.login);
     }
