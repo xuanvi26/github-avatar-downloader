@@ -22,7 +22,7 @@ function getRepoContributors(repoOwner, repoName, cb) {
     };
     
     request(options, function(err, res, body) {
-        if (res.statusCode !== '200') throw new Error('Request failed');
+        if (res.statusCode !== 200) throw new Error('Request failed');
         cb(err, body);
     });
 }
